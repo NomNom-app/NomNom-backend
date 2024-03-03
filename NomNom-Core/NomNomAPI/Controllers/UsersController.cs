@@ -20,7 +20,18 @@ public class UsersController : ApiController
     [HttpPost]
     public IActionResult CreateUser(CreateUserRequest request)
     {
-        ErrorOr<User> requestToUserResult = Models.User.From(_userService, request);
+        List<Error> credentialErrors = new();
+        {
+            Models.User.SignUp.ValidateUsername(request.username, _userService, ref credentialErrors);
+            Models.User.SignUp.ValidateEmail(request.email, _userService, ref credentialErrors);
+            Models.User.SignUp.ValidatePassword(request.password, request.passwordRepeated, ref credentialErrors);
+
+            if (credentialErrors.Count > 0)
+                return Problem(credentialErrors);
+        }
+
+
+        ErrorOr<User> requestToUserResult = Models.User.From(request);
 
         if (requestToUserResult.IsError)
             return Problem(requestToUserResult.Errors);
@@ -36,15 +47,10 @@ public class UsersController : ApiController
     [HttpGet]
     public IActionResult GetUser([FromQuery] GetUserRequest request)
     {
-        ErrorOr<User> getUserResult = _userService.GetUser(request.username);
+       ErrorOr<User> getUserResult = Models.User.LogIn.ValidateCredentials(request.username, request.password, _userService);
 
         if (getUserResult.IsError)
-              return Problem(getUserResult.Errors);
-
-        int hashedPassword = request.password.GetHashCode();
-
-         if (hashedPassword != getUserResult.Value.HashedPassword)
-                 return Problem(Errors.User.InvalidPassword);
+            return Problem(getUserResult.Errors);
 
         return getUserResult.Match(
             user => Ok(MapUserResponse(user)),
@@ -54,7 +60,7 @@ public class UsersController : ApiController
     [HttpPut]
     public IActionResult UpsertUser(UpsertUserRequest request)
     {
-        ErrorOr<User> requestToUserResult = Models.User.From(_userService, request);
+        ErrorOr<User> requestToUserResult = Models.User.From(request);
 
         if (requestToUserResult.IsError)
         {

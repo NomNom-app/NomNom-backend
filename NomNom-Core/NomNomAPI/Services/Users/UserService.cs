@@ -1,12 +1,9 @@
 ﻿#define LOG_USER_SERVICE
 
-//Created by Lukas Andrijauskas on 1st March, 2024
-
 using NomNomAPI.Models;
 using NomNomAPI.ServiceErrors;
 using NomNomAPI.Utils;
 using ErrorOr;
-using Microsoft.EntityFrameworkCore.Storage;
 
 namespace NomNomAPI.Services.Users;
 
