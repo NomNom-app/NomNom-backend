@@ -5,12 +5,9 @@ namespace NomNomAPI.Services.Users
 {
     public interface IUserService
     {
-        ErrorOr<Created> CreateUser(User breakfast);
-        ErrorOr<User> GetUser(string username);
+        ErrorOr<Created> CreateUser(User user);
+        ErrorOr<User> GetUser(string username, string password);
         ErrorOr<UpsertedUser> UpsertUser(User user);
         ErrorOr<Deleted> DeleteUser(string username);
-
-        public bool IsUsernameAlreadyInUse(string username);
-        public bool IsEmailAlreadyInUse(string email);
     }
 }

@@ -22,8 +22,8 @@ public static class Errors
         public static Error IncorrectPasswordLength => Error.Validation(code: "User.IncorrectPasswordLength",
            description: $"Password must be at least {Models.User.MIN_PASSWORD_LENGTH} characters long");
 
-        public static Error PasswordsDontMatch => Error.Validation(code: "User.PasswordsDontMatch",
-   description: $"Passwords do not match");
+   //     public static Error PasswordsDontMatch => Error.Validation(code: "User.PasswordsDontMatch",
+   //description: $"Passwords do not match");
 
         public static Error PasswordDoesNotContainUppercaseChar => Error.Validation(code: "User.PasswordDoesNotContainUppercaseChar",
 description: $"Password does not contain an uppercase character");
@@ -32,7 +32,7 @@ description: $"Password does not contain an uppercase character");
 description: $"Password does not contain a lowercase character");
 
         public static Error PasswordDoesNotContainANumber => Error.Validation(code: "User.PasswordDoesNotContainANumber",
-description: $"Password does not contain a number");
+description: $"Password does not contain a digit");
 
         public static Error InvalidPassword => Error.Validation(code: "User.InvalidPassword",
 description: $"Incorrect password");

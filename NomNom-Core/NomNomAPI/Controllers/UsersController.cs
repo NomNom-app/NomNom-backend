@@ -4,7 +4,6 @@ using NomNomAPI.ServiceErrors;
 using NomNomAPI.Services.Users;
 using ErrorOr;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 namespace NomNomAPI.Controllers;
 
@@ -18,26 +17,19 @@ public class UsersController : ApiController
     }
 
     [HttpPost]
-    public IActionResult CreateUser(CreateUserRequest request)
+    public IActionResult Register(RegisterNewUserRequest request)
     {
-        List<Error> credentialErrors = new();
-        {
-            Models.User.SignUp.ValidateUsername(request.username, _userService, ref credentialErrors);
-            Models.User.SignUp.ValidateEmail(request.email, _userService, ref credentialErrors);
-            Models.User.SignUp.ValidatePassword(request.password, request.passwordRepeated, ref credentialErrors);
 
-            if (credentialErrors.Count > 0)
-                return Problem(credentialErrors);
-        }
+        ErrorOr<User> registerNewUserResult = Models.User.From(request);
 
+        if (registerNewUserResult.IsError)
+            return Problem(registerNewUserResult.Errors);
 
-        ErrorOr<User> requestToUserResult = Models.User.From(request);
-
-        if (requestToUserResult.IsError)
-            return Problem(requestToUserResult.Errors);
-
-        var user = requestToUserResult.Value;
+        var user = registerNewUserResult.Value;
         ErrorOr<Created> createUserResult = _userService.CreateUser(user);
+
+        if (createUserResult.IsError)
+            return Problem(createUserResult.Errors);
 
         return createUserResult.Match(
             created => CreatedAtGetUser(user),
@@ -45,33 +37,15 @@ public class UsersController : ApiController
     }
 
     [HttpGet]
-    public IActionResult GetUser([FromQuery] GetUserRequest request)
+    public IActionResult LogIn([FromQuery] LogInUserRequest request)
     {
-       ErrorOr<User> getUserResult = Models.User.LogIn.ValidateCredentials(request.username, request.password, _userService);
+        ErrorOr<User> getUserResult = _userService.GetUser(request.username, request.password);
 
         if (getUserResult.IsError)
             return Problem(getUserResult.Errors);
 
         return getUserResult.Match(
             user => Ok(MapUserResponse(user)),
-            errors => Problem(errors));
-    }
-
-    [HttpPut]
-    public IActionResult UpsertUser(UpsertUserRequest request)
-    {
-        ErrorOr<User> requestToUserResult = Models.User.From(request);
-
-        if (requestToUserResult.IsError)
-        {
-            return Problem(requestToUserResult.Errors);
-        }
-
-        var user = requestToUserResult.Value;
-        ErrorOr<UpsertedUser> upsertUserResult = _userService.UpsertUser(user);
-
-        return upsertUserResult.Match(
-            upserted => upserted.IsNewlyCreated ? CreatedAtGetUser(user) : NoContent(),
             errors => Problem(errors));
     }
 
@@ -93,7 +67,7 @@ public class UsersController : ApiController
     private CreatedAtActionResult CreatedAtGetUser(User user)
     {
         return CreatedAtAction(
-            actionName: nameof(GetUser),
+            actionName: nameof(LogIn),
             routeValues: new { id = user.Username.GetHashCode() },
             value: MapUserResponse(user));
     }

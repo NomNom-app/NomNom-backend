@@ -13,6 +13,12 @@ public class UserService : IUserService
 
     public ErrorOr<Created> CreateUser(User user)
     {
+       if (IsUsernameAlreadyInUse(user.Username))
+            return Errors.User.UsernameAlreadyTaken;
+
+       if (IsEmailAlreadyInUse(user.Email))
+            return Errors.User.EmailAlreadyTaken;
+
         _users.Add(user.Username.GetHashCode(), user);
 
 #if LOG_USER_SERVICE
@@ -33,17 +39,19 @@ public class UserService : IUserService
         return Result.Deleted;
     }
 
-    public ErrorOr<User> GetUser(string username)
+    public ErrorOr<User> GetUser(string username, string password)
     {
-        if (_users.TryGetValue(username.GetHashCode(), out var user))
-        {
-#if LOG_USER_SERVICE
-            Log.LogMessage($"User with username {username} returned.");
-#endif
-            return user;
-        }
+        if (!_users.TryGetValue(username.GetHashCode(), out var user))
+            return Errors.User.InvalidUsername;
 
-        return Errors.User.InvalidUsername;
+        if (user.HashedPassword != password.GetHashCode())
+            return Errors.User.InvalidPassword;
+
+#if LOG_USER_SERVICE
+        Log.LogMessage($"User with username {username} returned.");
+#endif
+
+        return user;
     }
 
     public ErrorOr<UpsertedUser> UpsertUser(User user)
@@ -59,13 +67,13 @@ public class UserService : IUserService
     }
 
    
-    public bool IsUsernameAlreadyInUse(string username)
+    private bool IsUsernameAlreadyInUse(string username)
     {
        return _users.ContainsKey(username.GetHashCode());
     }
 
     //Hacky until we get a proper database
-    public bool IsEmailAlreadyInUse(string email)
+    private bool IsEmailAlreadyInUse(string email)
     {
         foreach (KeyValuePair<int, User> usersElement in _users)
         {
