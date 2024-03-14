@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NomNomAPI", "NomNomAPI\NomN
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NomNom.Contracts", "NomNom.Contracts\NomNom.Contracts.csproj", "{34AD2A8B-09B6-4380-B268-5C429E232013}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NomNomAPI.UnitTests", "NomNomAPITests\NomNomAPI.UnitTests.csproj", "{FD8A0B79-6C02-48D0-B82A-54AC2A1BF070}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{34AD2A8B-09B6-4380-B268-5C429E232013}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34AD2A8B-09B6-4380-B268-5C429E232013}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34AD2A8B-09B6-4380-B268-5C429E232013}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD8A0B79-6C02-48D0-B82A-54AC2A1BF070}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD8A0B79-6C02-48D0-B82A-54AC2A1BF070}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD8A0B79-6C02-48D0-B82A-54AC2A1BF070}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD8A0B79-6C02-48D0-B82A-54AC2A1BF070}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
