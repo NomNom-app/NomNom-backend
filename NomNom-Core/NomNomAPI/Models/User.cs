@@ -1,4 +1,6 @@
-﻿using ErrorOr;
+﻿#define DISABLE_CREDENTIALS_VALIDATION  //Disable validation checks for easier debugging
+
+using ErrorOr;
 using NomNom.Contracts.User;
 using NomNomAPI.ServiceErrors;
 using NomNomAPI.Services;
@@ -28,7 +30,9 @@ public class User
 
     public static ErrorOr<User> Create(string username, string email, string password)
     {
+#if !DISABLE_CREDENTIALS_VALIDATION
         List<Error> errors = new List<Error>();
+
 
         ValidateUsername(username, ref errors);
         ValidateEmail(email, ref errors);
@@ -36,11 +40,12 @@ public class User
 
         if (errors.Count > 0)
             return errors;
+#endif
 
         return new User(username, email, password.GetHashCode());
     }
 
-    public static ErrorOr<User> From(RegisterNewUserRequest request)
+    public static ErrorOr<User> From(SignUpRequest request)
     {
         return Create(request.username, request.email, request.password);
     }
@@ -69,10 +74,8 @@ public class User
         }
     }
 
-    private static bool ValidatePassword(string password, ref List<Error> errors)
+    private static void ValidatePassword(string password, ref List<Error> errors)
     {
-        int numErrors = errors.Count;
-
         if (password.Length < MIN_PASSWORD_LENGTH)
             errors.Add(Errors.User.IncorrectPasswordLength);
 
@@ -109,10 +112,5 @@ public class User
 
         if (numberPresent == false)
             errors.Add(Errors.User.PasswordDoesNotContainANumber);
-
-        if (errors.Count > numErrors)
-            return false;
-
-        return true;
     }
 }

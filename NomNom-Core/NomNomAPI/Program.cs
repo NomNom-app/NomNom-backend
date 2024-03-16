@@ -1,12 +1,21 @@
 #define USE_SWAGGER_UI
 
 using NomNomAPI.Services.Users;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 {
     // Add services to the container.
     builder.Services.AddControllers();
     builder.Services.AddScoped<IUserService, UserService>();
+   
+    builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie
+        (option =>
+        {
+            option.LoginPath = "/Access/Login";
+            option.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+        });
+
 
 #if USE_SWAGGER_UI
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -30,6 +39,8 @@ var app = builder.Build();
 
     app.UseExceptionHandler("/error");
     app.UseHttpsRedirection();
-    app.MapControllers();
+    app.UseAuthentication();
+    //app.MapControllers();
+    app.MapControllerRoute(name: "default", pattern: "{controller=Access}/{action=Index}/{id?}");
     app.Run();
 }
