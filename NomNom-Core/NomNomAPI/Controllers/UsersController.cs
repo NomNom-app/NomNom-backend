@@ -22,15 +22,14 @@ public class UsersController : ApiController
     }
 
     [HttpPost]
-    [AllowAnonymous]
     public IActionResult SignUp(SignUpRequest request)
     {
-        ErrorOr<User> registerNewUserResult = Models.User.From(request);
+        ErrorOr<User> SignUpRequestResult = Models.User.From(request);
 
-        if (registerNewUserResult.IsError)
-            return Problem(registerNewUserResult.Errors);
+        if (SignUpRequestResult.IsError)
+            return Problem(SignUpRequestResult.Errors);
 
-        var user = registerNewUserResult.Value;
+        var user = SignUpRequestResult.Value;
         ErrorOr<Created> createUserResult = _userService.CreateUser(user);
 
         if (createUserResult.IsError)
@@ -39,34 +38,34 @@ public class UsersController : ApiController
         return Ok();
     }
 
-    [HttpPost]
-    [AllowAnonymous]
-    public async Task<IActionResult> Login(LogInRequest request)
-    {
-        ErrorOr<User> getUserResult = _userService.GetUser(request.username, request.password);
+    //[HttpPost]
+    //[AllowAnonymous]
+    //public async Task<IActionResult> Login(LogInRequest request)
+    //{
+    //    ErrorOr<User> getUserResult = _userService.GetUser(request.username, request.password);
 
-        if (getUserResult.IsError)
-            return Problem(getUserResult.Errors);
+    //    if (getUserResult.IsError)
+    //        return Problem(getUserResult.Errors);
 
-        var user = getUserResult.Value;
+    //    var user = getUserResult.Value;
 
-        List<Claim> claims = new List<Claim>() {
-            new Claim(ClaimTypes.NameIdentifier, user.Username),
-            new Claim(ClaimTypes.Email, user.Email)
-        };
+    //    List<Claim> claims = new List<Claim>() {
+    //        new Claim(ClaimTypes.NameIdentifier, user.Username),
+    //        new Claim(ClaimTypes.Email, user.Email)
+    //    };
 
-        ClaimsIdentity identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+    //    ClaimsIdentity identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-        AuthenticationProperties properties = new AuthenticationProperties()
-        {
-            AllowRefresh = true,
-            IsPersistent = true,
-        };
+    //    AuthenticationProperties properties = new AuthenticationProperties()
+    //    {
+    //        AllowRefresh = true,
+    //        IsPersistent = true,
+    //    };
 
-        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), properties);
+    //    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), properties);
 
-        return Ok();
-    }
+    //    return Ok();
+    //}
 
     //[HttpDelete]
     //public IActionResult DeleteUser(string username)

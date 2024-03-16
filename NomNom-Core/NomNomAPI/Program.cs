@@ -9,12 +9,12 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddControllers();
     builder.Services.AddScoped<IUserService, UserService>();
    
-    builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie
-        (option =>
-        {
-            option.LoginPath = "/Access/Login";
-            option.ExpireTimeSpan = TimeSpan.FromMinutes(20);
-        });
+    //builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie
+    //    (option =>
+    //    {
+    //        option.LoginPath = "/Access/Login";
+    //        option.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+    //    });
 
 
 #if USE_SWAGGER_UI
@@ -38,9 +38,9 @@ var app = builder.Build();
 #endif
 
     app.UseExceptionHandler("/error");
-    app.UseHttpsRedirection();
-    app.UseAuthentication();
-    //app.MapControllers();
-    app.MapControllerRoute(name: "default", pattern: "{controller=Access}/{action=Index}/{id?}");
+    //app.UseHttpsRedirection();
+    //app.UseAuthentication();
+    app.MapControllers();
+    //app.MapControllerRoute(name: "default", pattern: "{controller=Access}/{action=Index}/{id?}");
     app.Run();
 }
