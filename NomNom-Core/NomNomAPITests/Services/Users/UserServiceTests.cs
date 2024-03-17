@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using NomNomAPI.Models;
 using ErrorOr;
 
-namespace NomNomAPI.Services.Users.Tests
+namespace NomNomAPI.UnitTests.Services.Users
 {
     [TestClass]
     public class UserServiceTests

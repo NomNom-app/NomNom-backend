@@ -9,5 +9,6 @@ namespace NomNomAPI.Services.Users
         ErrorOr<User> GetUser(string username, string password);
         ErrorOr<UpsertedUser> UpsertUser(User user);
         ErrorOr<Deleted> DeleteUser(string username);
+        string GenerateJwtToken(User user);
     }
 }

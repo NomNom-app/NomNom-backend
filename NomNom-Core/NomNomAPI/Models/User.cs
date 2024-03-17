@@ -17,18 +17,20 @@ public class User
 
     public const int MIN_PASSWORD_LENGTH = 8;
 
-    public string Username { get; set; }
-    public string Email { get; set; }
-    public int HashedPassword { get; set; }
+    public Guid ID {get;}
+    public string Username { get;}
+    public string Email { get;}
+    public int HashedPassword { get;}
 
-    private User(string username, string email, int hashedPassword)
+    private User(string username, string email, int hashedPassword, Guid id)
     {
         Username = username;
         Email = email;
         HashedPassword = hashedPassword;
+        ID = id;
     }
 
-    public static ErrorOr<User> Create(string username, string email, string password)
+    public static ErrorOr<User> Create(string username, string email, string password, Guid? id = null)
     {
 #if !DISABLE_CREDENTIALS_VALIDATION
         List<Error> errors = new List<Error>();
@@ -42,12 +44,12 @@ public class User
             return errors;
 #endif
 
-        return new User(username, email, password.GetHashCode());
+        return new User(username, email, password.GetHashCode(), id ?? Guid.NewGuid());
     }
 
     public static ErrorOr<User> From(SignUpRequest request)
     {
-        return Create(request.username, request.email, request.password);
+        return Create(request.Username, request.Email, request.Password);
     }
 
 

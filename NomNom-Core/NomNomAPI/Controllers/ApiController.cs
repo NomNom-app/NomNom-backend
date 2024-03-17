@@ -1,10 +1,12 @@
 ﻿using ErrorOr;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace NomNomAPI.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("[controller]/[action]")]
 public class ApiController : ControllerBase
 {

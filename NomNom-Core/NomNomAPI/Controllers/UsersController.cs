@@ -1,13 +1,10 @@
 ﻿using NomNom.Contracts.User;
 using NomNomAPI.Models;
-using NomNomAPI.ServiceErrors;
 using NomNomAPI.Services.Users;
-using ErrorOr;
-using Microsoft.AspNetCore.Mvc;
 
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using ErrorOr;
+
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
 namespace NomNomAPI.Controllers;
@@ -22,6 +19,7 @@ public class UsersController : ApiController
     }
 
     [HttpPost]
+    [AllowAnonymous]
     public IActionResult SignUp(SignUpRequest request)
     {
         ErrorOr<User> SignUpRequestResult = Models.User.From(request);
@@ -38,34 +36,22 @@ public class UsersController : ApiController
         return Ok();
     }
 
-    //[HttpPost]
-    //[AllowAnonymous]
-    //public async Task<IActionResult> Login(LogInRequest request)
-    //{
-    //    ErrorOr<User> getUserResult = _userService.GetUser(request.username, request.password);
+    [HttpPost]
+    [AllowAnonymous]
+    public IActionResult Login(LoginRequest request)
+    {
+        ErrorOr<User> getUserResult = _userService.GetUser(request.Username, request.Password);
 
-    //    if (getUserResult.IsError)
-    //        return Problem(getUserResult.Errors);
+        if (getUserResult.IsError)
+            return Problem(getUserResult.Errors);
 
-    //    var user = getUserResult.Value;
+        var user = getUserResult.Value;
 
-    //    List<Claim> claims = new List<Claim>() {
-    //        new Claim(ClaimTypes.NameIdentifier, user.Username),
-    //        new Claim(ClaimTypes.Email, user.Email)
-    //    };
+        _userService.GenerateJwtToken(user);
 
-    //    ClaimsIdentity identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-    //    AuthenticationProperties properties = new AuthenticationProperties()
-    //    {
-    //        AllowRefresh = true,
-    //        IsPersistent = true,
-    //    };
-
-    //    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), properties);
-
-    //    return Ok();
-    //}
+        return Ok();
+    }
 
     //[HttpDelete]
     //public IActionResult DeleteUser(string username)

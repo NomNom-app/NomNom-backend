@@ -1,6 +1,6 @@
 ﻿namespace NomNom.Contracts.User;
 
-public record SignUpRequest(
+public record AuthResponse(
     string Username,
     string Email,
-    string Password);
+    string Token);

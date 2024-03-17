@@ -1,4 +1,4 @@
-﻿namespace NomNomAPI.Utils
+﻿namespace NomNomAPI.DebugUtils
 {
     public static class Log
     {

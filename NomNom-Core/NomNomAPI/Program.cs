@@ -1,20 +1,39 @@
 #define USE_SWAGGER_UI
 
+using System.Text;
+
 using NomNomAPI.Services.Users;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using NomNomAPI.Auth;
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 {
+
     // Add services to the container.
     builder.Services.AddControllers();
+
+    var jwtSettings = new JwtSettings();
+    builder.Configuration.Bind(JwtSettings.SectionName, jwtSettings);
+    builder.Services.AddSingleton(Options.Create(jwtSettings));
+
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidIssuer = jwtSettings.Issuer,
+            ValidAudience = jwtSettings.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret)),
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = false,
+            ValidateIssuerSigningKey = true,
+        };
+    });
+
     builder.Services.AddScoped<IUserService, UserService>();
-   
-    //builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie
-    //    (option =>
-    //    {
-    //        option.LoginPath = "/Access/Login";
-    //        option.ExpireTimeSpan = TimeSpan.FromMinutes(20);
-    //    });
 
 
 #if USE_SWAGGER_UI
@@ -38,9 +57,8 @@ var app = builder.Build();
 #endif
 
     app.UseExceptionHandler("/error");
-    //app.UseHttpsRedirection();
-    //app.UseAuthentication();
+    app.UseAuthentication();
+    app.UseAuthorization();
     app.MapControllers();
-    //app.MapControllerRoute(name: "default", pattern: "{controller=Access}/{action=Index}/{id?}");
     app.Run();
 }
