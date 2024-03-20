@@ -6,16 +6,16 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["NomNomAPI/NomNomAPI.csproj", "./"]
+COPY ["./NomNomAPI.csproj", "./"]
 COPY ["../NomNom.Contracts/NomNom.Contracts.csproj", "../NomNom.Contracts/"]
-RUN dotnet restore "NomNomAPI.csproj"
+RUN dotnet restore "./NomNomAPI.csproj"
 COPY . .
 WORKDIR "/src"
-RUN dotnet build "NomNomAPI/NomNomAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "NomNomAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "NomNomAPI/NomNomAPI.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "NomNomAPI.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
