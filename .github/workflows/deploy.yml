@@ -26,8 +26,8 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v2
       with:
-        context: NomNom-Core
-        dockerfile: NomNomAPI/Dockerfile
+        context: NomNom-Core/NomNomAPI
+        dockerfile: Dockerfile
         push: true
         tags: gcr.io/elite-bird-417413/nomnomapi:latest
 
