@@ -31,7 +31,7 @@ jobs:
         tags: gcr.io/elite-bird-417413/NomNomAPI:latest
 
     - name: Setup Google Cloud SDK
-      uses: google-github-actions/setup-gcloud@master
+      uses: google-github-actions/setup-gcloud@v0.2.1
       with:
         service_account_key: ${{ secrets.GCP_SA_KEY }}
         project_id: elite-bird-417413
