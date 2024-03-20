@@ -50,7 +50,7 @@ on:
 
 env:
   PROJECT_ID: elite-bird-417413
-  GAR_LOCATION: us-central1-docker.pkg.dev/elite-bird-417413/nomnomapi
+  GAR_LOCATION: us-central1
   SERVICE: nomnomapi
   REGION: us-central1
 
