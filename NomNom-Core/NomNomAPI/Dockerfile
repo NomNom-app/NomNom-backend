@@ -7,7 +7,7 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["./NomNomAPI.csproj", "./"]
-COPY ["../NomNom.Contracts/NomNom.Contracts.csproj", "../NomNom.Contracts/"]
+COPY ["../NomNom.Contracts/NomNom.Contracts.csproj", "./"]
 RUN dotnet restore "./NomNomAPI.csproj"
 COPY . .
 WORKDIR "/src"
