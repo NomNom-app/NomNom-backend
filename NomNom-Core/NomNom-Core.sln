@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NomNomAPI", "NomNomAPI\NomN
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NomNomAPI.UnitTests", "NomNomAPITests\NomNomAPI.UnitTests.csproj", "{FD8A0B79-6C02-48D0-B82A-54AC2A1BF070}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NomNom.Contracts", "NomNom.Contracts\NomNom.Contracts.csproj", "{3CE54131-6834-4A8B-846A-BC10D3E2C74D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NomNom.Contracts", "NomNom.Contracts\NomNom.Contracts.csproj", "{3CE54131-6834-4A8B-846A-BC10D3E2C74D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
